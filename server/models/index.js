@@ -1,2 +1,3 @@
-require('./song');
-require('./lyric');
+require('./user.model');
+require('./comment.model');
+require('./post.model');

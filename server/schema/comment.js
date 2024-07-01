@@ -6,25 +6,27 @@ const {
   GraphQLInt,
   GraphQLString
 } = graphql;
-const Lyric = mongoose.model('lyric');
+const GraphQLDate = require('graphql-date')
+const User = mongoose.model('user');
 
-const LyricType = new GraphQLObjectType({
-  name:  'LyricType',
+const CommentType = new GraphQLObjectType({
+  name:  'CommentType',
   fields: () => ({
     id: { type: GraphQLID },
-    likes: { type: GraphQLInt },
+    post: { type: GraphQLInt },
     content: { type: GraphQLString },
-    song: {
-      type: require('./post'),
+    createdAt: {type: GraphQLDate},
+    author: {
+      type: require('./user'),
       resolve(parentValue) {
-        return Lyric.findById(parentValue).populate('song')
-          .then(lyric => {
-            console.log(lyric)
-            return lyric.song
+        return User.findById(parentValue).populate('user')
+          .then(user => {
+            console.log("user: ", user)
+            return user.name
           });
       }
     }
   })
 });
 
-module.exports = LyricType;
+module.exports = CommentType;
