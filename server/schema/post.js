@@ -4,8 +4,8 @@ const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 const LyricType = require('./user');
 const Song = mongoose.model('song');
 
-const SongType = new GraphQLObjectType({
-  name:  'SongType',
+const PostType = new GraphQLObjectType({
+  name:  'PostType',
   fields: () => ({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
@@ -18,4 +18,4 @@ const SongType = new GraphQLObjectType({
   })
 });
 
-module.exports = SongType;
+module.exports = PostType;
