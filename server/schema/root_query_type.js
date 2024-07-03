@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 const graphql = require('graphql');
 const { GraphQLObjectType, GraphQLList, GraphQLID, GraphQLNonNull } = graphql;
-const SongType = require('./post');
+const PostType = require('./post');
 const LyricType = require('./user');
-const Lyric = mongoose.model('lyric');
-const Song = mongoose.model('song');
+const Lyric = mongoose.model('comment');
+const Post = mongoose.model('post');
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -15,11 +15,11 @@ const RootQuery = new GraphQLObjectType({
         return Song.find({});
       }
     },
-    song: {
-      type: SongType,
+    post: {
+      type: PostType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },
       resolve(parentValue, { id }) {
-        return Song.findById(id);
+        return Post.findById(id);
       }
     },
     lyric: {
