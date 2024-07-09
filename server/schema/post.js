@@ -2,19 +2,25 @@ const mongoose = require('mongoose');
 const graphql = require('graphql');
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 const LyricType = require('./user');
-const Song = mongoose.model('song');
+const User = mongoose.model('user');
 
 const PostType = new GraphQLObjectType({
   name:  'PostType',
   fields: () => ({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
-    lyrics: {
-      type: new GraphQLList(LyricType),
-      resolve(parentValue) {
-        return Song.findLyrics(parentValue.id);
-      }
-    }
+    // comments: {
+    //   type: new GraphQLList(LyricType),
+    //   resolve(parentValue) {
+    //     return Song.findLyrics(parentValue.id);
+    //   }
+    // },
+    // author: {
+    //   type: new GraphQLList(LyricType),
+    //   resolve(parentValue) {
+    //     return Song.findLyrics(parentValue.id);
+    //   }
+    // }
   })
 });
 

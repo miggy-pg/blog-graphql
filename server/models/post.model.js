@@ -15,20 +15,19 @@ const PostSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'user'
     },
-    likes: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
 
-// PostSchema.statics.like = function(id) {
-//   const Lyric = mongoose.model('lyric');
-
-//   return Lyric.findById(id)
-//     .then(lyric => {
-//       ++lyric.likes;
-//       return lyric.save();
-//     })
-// }
+PostSchema.statics.findPostsByAuthor = function(authorId) {
+  return this.find({authorId}, {
+    __v: 0,
+    _id: 0
+  }).sort({createdAt: 1})
+    .then(post => {
+      return { post };
+    })
+}
 
 const Post = mongoose.model('Post', PostSchema);
 

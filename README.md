@@ -1,6 +1,7 @@
 # Blog GraphQL
 This is a web-app that uses GraphQL for query access
 
+## Web Application System Architecture
 ### User
 - id: Unique identifier for the user.
 - username: The user's username.

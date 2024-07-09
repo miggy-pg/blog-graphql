@@ -2,31 +2,57 @@ const mongoose = require('mongoose');
 const graphql = require('graphql');
 const { GraphQLObjectType, GraphQLList, GraphQLID, GraphQLNonNull } = graphql;
 const PostType = require('./post');
-const LyricType = require('./user');
-const Lyric = mongoose.model('comment');
+const UserType = require('./user');
+const CommentType = require('./comment');
+const Comment = mongoose.model('comment');
 const Post = mongoose.model('post');
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: () => ({
-    songs: {
-      type: new GraphQLList(SongType),
+    users: {
+      type: new GraphQLList(UserType),
       resolve() {
-        return Song.find({});
+        return User.find({});
       }
     },
-    post: {
+    user: {
+      type: new GraphQLList(UserType),
+      resolve(parentValue, {id}) {
+        return User.findById({id});
+      }
+    },
+    posts: {
       type: PostType,
       args: { id: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve(parentValue, { id }) {
-        return Post.findById(id);
+      resolve() {
+        return Post.findById({id});
       }
     },
-    lyric: {
-      type: LyricType,
-      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve(parnetValue, { id }) {
-        return Lyric.findById(id);
+    posts: {
+      type: PostType,
+      resolve() {
+        return Post.find({});
+      }
+    },
+    postsByAuthor: {
+      type: new GraphQLList(PostType),
+      args: { authorId: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve(parentValue, { authorId }) {
+        return Post.findPostsByAuthor(authorId);
+      }
+    },
+    postComments: {
+      type: new GraphQLList(CommentType),
+      args: { postId: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve(parnetValue, { postId }) {
+        return Comment.findPostComments(postId);
+      }
+    },
+    comments: {
+      type: CommentType,
+      resolve(){
+        return Comment.find({})
       }
     }
   })
