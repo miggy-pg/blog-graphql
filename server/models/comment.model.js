@@ -16,16 +16,10 @@ const CommentSchema = new Schema(
   { timestamps: true}
 );
 
-// CommentSchema.statics.like = function(id) {
-//   const Lyric = mongoose.model('lyric');
+CommentSchema.statics.findPostComments = function(postId) {
+  return this.find({ postId }, {__v: 0, _id:0}).sort({ createdAt: 1 });
+};
 
-//   return Lyric.findById(id)
-//     .then(lyric => {
-//       ++lyric.likes;
-//       return lyric.save();
-//     })
-// }
-
-const Comment = mongoose.model('Comment', CommentSchema);
+const Comment = mongoose.model('comment', CommentSchema);
 
 module.exports = Comment

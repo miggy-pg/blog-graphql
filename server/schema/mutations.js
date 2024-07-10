@@ -1,45 +1,54 @@
 const graphql = require('graphql');
 const { GraphQLObjectType, GraphQLString, GraphQLID } = graphql;
 const mongoose = require('mongoose');
-const Song = mongoose.model('song');
-const Lyric = mongoose.model('lyric');
-const SongType = require('./post');
-const LyricType = require('./user');
+const Post = mongoose.model('post');
+const User = mongoose.model('user');
+const PostType = require('./post');
+const UserType = require('./user');
+const CommentType = require('./comment');
 
 const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
-    addSong: {
-      type: SongType,
+    addPost: {
+      type: PostType,
       args: {
-        title: { type: GraphQLString }
+        authorId: { type: GraphQLID },
+        title: { type: GraphQLString },
+        content: { type: GraphQLString }
       },
-      resolve(parentValue, { title }) {
-        return new Song({ title }).save();
+      resolve(parentValue, { title, content, authorId }) {
+        return new Post({ title, content, authorId }).save();
       }
     },
-    addLyricToSong: {
-      type: SongType,
+    addCommentToPost: {
+      type: CommentType,
       args: {
-        content: { type: GraphQLString },
-        songId: { type: GraphQLID }
+        authorId: { type: GraphQLID },
+        postId: { type: GraphQLID },
+        content: { type: GraphQLString }
       },
-      resolve(parentValue, { content, songId }) {
-        return Song.addLyric(songId, content);
+      resolve(parentValue, { content, postId, authorId }) {
+        return new Comment({ authorId, postId, content }).save();
       }
     },
-    likeLyric: {
-      type: LyricType,
+    addUser: {
+      type: UserType,
+      args: { 
+        name: { type: GraphQLString },
+        username: { type: GraphQLString }, 
+        email: { type: GraphQLString }, 
+        password: { type: GraphQLString } 
+      },
+      resolve(parentValue, { name, username, email, password }) {
+        return new User({ name, username, email, password}).save()
+      }
+    },
+    deletePost: {
+      type: PostType,
       args: { id: { type: GraphQLID } },
       resolve(parentValue, { id }) {
-        return Lyric.like(id);
-      }
-    },
-    deleteSong: {
-      type: SongType,
-      args: { id: { type: GraphQLID } },
-      resolve(parentValue, { id }) {
-        return Song.findByIdAndRemove(id);
+        return Post.findByIdAndRemove(id);
       }
     }
   }

@@ -29,6 +29,6 @@ PostSchema.statics.findPostsByAuthor = function(authorId) {
     })
 }
 
-const Post = mongoose.model('Post', PostSchema);
+const Post = mongoose.model('post', PostSchema);
 
 module.exports = Post

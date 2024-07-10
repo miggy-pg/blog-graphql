@@ -5,7 +5,6 @@ const {
   GraphQLID,
   GraphQLInt,
   GraphQLString,
-  GraphQLNonNull
 } = graphql;
 const GraphQLDate = require('graphql-date')
 const User = mongoose.model('user');
