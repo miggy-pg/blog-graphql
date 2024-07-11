@@ -6,11 +6,10 @@ import { ApolloProvider } from '@apollo/client';
 const client = new ApolloClient({})
 
 const Root = () => {
-  return (
-    <ApolloProvider store={store}>
+  return <ApolloProvider client={client}>
         <div>Blog</div>
     </ApolloProvider>
-  )
+  
 };
 
 ReactDOM.render(
