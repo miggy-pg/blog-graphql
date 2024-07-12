@@ -2,9 +2,9 @@ import React from "react";
 import { useQuery, gql } from "@apollo/client"
 
 const query = gql`
-  {
-    users {
-     id 
+  query {
+    post(id:"6690073a05ed072a96da7a14") {
+      title 
     }
   }
 `;

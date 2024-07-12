@@ -40,3 +40,12 @@ Here's a quick overview of the relationships:
 **Apollo Provider**
 - The integration layer between the Apollo store and our actual React application
 - A provider of data to our application, the provider will take data from the store and inject it into our application
+
+## Music Lyric System Architecture (somewhat similar to our structure)
+![](screenshots/sample_songlist_graphql.png)
+
+- At the top, we have the **GraphQL Server** which is hosting our data.
+- Next, the **Apollo Store** which is the point of contact/middleware between the **GraphQL Server**. This makes sure that any data that comes from the **GraphQL Server** is being distributed throughout the application.
+- **ApolloProvider** acts as middleware for the **React** side of things and the **Apollo Store**.
+- **Root** component which is displaying the **Query** which has an attached **SongList**
+- Note: for an **Apollo** application like this project, we tend to pick a centralized components like the **SongList** as receiving the queries. Then manipulate these data down to the child component **props**
