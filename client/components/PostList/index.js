@@ -1,16 +1,10 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client"
+import { useQuery } from "@apollo/client"
+import { getPosts } from "../../queries/queryPost";
 
-const query = gql`
-  query {
-    post(id:"6690073a05ed072a96da7a14") {
-      title 
-    }
-  }
-`;
 
 function PostList(){
-  const { loading, error, data } = useQuery(query);
+  const { loading, error, data } = useQuery(getPosts);
   console.log("data: ", data);
   return <div>PostList</div>
 }
