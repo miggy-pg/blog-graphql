@@ -1,8 +1,13 @@
 import React from 'react';
+import { Routes, Route } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import * as ReactDOM from 'react-dom/client';
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { createHttpLink } from '@apollo/client';
+
 import PostList from "./components/PostList"
+import PostCreate from "./components/PostCreate"
+import App from "./App"
 
 const httpLink = new createHttpLink({
     uri: "http://localhost:4000/graphql"
@@ -16,7 +21,14 @@ const client = new ApolloClient({
 const Root = () => {
   return (
     <ApolloProvider client={client}>
-      <PostList/>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App/>}>
+            <Route index element={<PostList/>}/>
+            <Route path="post" element={<PostCreate/>}/>
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </ApolloProvider> 
   )
 };
@@ -27,5 +39,3 @@ root.render(
     <Root />
   </React.StrictMode>
 )
-
-

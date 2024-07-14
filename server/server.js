@@ -7,8 +7,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const schema = require('./schema/schema');
 const app = express();
+const path = require("path")
 
-// Replace with your Mongo Atlas URI
 const MONGO_URI = process.env.MONGO_URI;
 if (!MONGO_URI) {
   throw new Error('You must provide a Mongo Atlas URI');
@@ -30,6 +30,10 @@ app.use(
     graphiql: true
   })
 );
+
+const test = path.join(__dirname, 'client/build')
+console.log("test: ", test);
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 const webpackMiddleware = require('webpack-dev-middleware');
 const webpack = require('webpack');
