@@ -1,18 +1,26 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, FormProvider, useFormContext } from "react-hook-form";
 
 function PostCreate() {
-  const { register, handleSubmit, reset } = useForm();
+  const methods = useForm();
+  const onSubmit = (data) => console.log(data);
 
   return (
     <div>
       PostCreate
-      <form>
-        <input {...register("title")} />
-        <input {...register("")} />
-      </form>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <NestedInput />
+          <input type="submit" />
+        </form>
+      </FormProvider>
     </div>
   );
+}
+
+function NestedInput() {
+  const { register } = useFormContext();
+  return <input {...register} />;
 }
 
 export default PostCreate;

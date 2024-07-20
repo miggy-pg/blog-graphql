@@ -1,13 +1,10 @@
 const webpack = require("webpack");
+const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: "./client/index.js",
   mode: "development",
-  output: {
-    path: "/",
-    filename: "bundle.js",
-  },
   module: {
     rules: [
       {
@@ -20,6 +17,21 @@ module.exports = {
         test: /\.css$/,
       },
     ],
+  },
+  resolve: { extensions: ["*", ".js"] },
+  output: {
+    // path: path.resolve(__dirname, "dist/"),
+    publicPath: "/dist",
+    filename: "bundle.js",
+  },
+  devServer: {
+    static: path.join(__dirname, "/"),
+    port: 3000,
+    devMiddleware: {
+      publicPath: "/dist/",
+      writeToDisk: true,
+    },
+    hot: "only",
   },
   plugins: [
     new HtmlWebpackPlugin({

@@ -31,9 +31,11 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname, "client/build")));
+app.use(express.static("/home/miggy/Desktop/apps/blog-graphql/dist"));
+// app.use(express.static(path.join(__dirname, "dist")));
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname + "/client/build/index.html"));
+  // res.sendFile(path.join(__dirname + "/client/dist/index.html"));
+  res.sendFile("/home/miggy/Desktop/apps/blog-graphql/dist/index.html");
 });
 
 const webpackMiddleware = require("webpack-dev-middleware");
