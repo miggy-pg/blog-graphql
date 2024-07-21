@@ -5,9 +5,11 @@ import * as ReactDOM from "react-dom/client";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { createHttpLink } from "@apollo/client";
 
+import PostDetail from "./components/PostDetail";
 import PostList from "./components/PostList";
-import PostCreate from "./components/PostCreate";
+import CreatePost from "./components/CreatePost";
 import App from "./App";
+import "./style/style.css";
 
 const httpLink = new createHttpLink({
   uri: "http://localhost:4000/graphql",
@@ -25,7 +27,8 @@ const Root = () => {
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<PostList />} />
-            <Route path="post/new" element={<PostCreate />} />
+            <Route path="post/new" element={<CreatePost />} />
+            <Route path="post/:postId" element={<PostDetail />} />
           </Route>
         </Routes>
       </BrowserRouter>

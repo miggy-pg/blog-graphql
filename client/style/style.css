@@ -1,0 +1,23 @@
+body {
+  width: 100vw;
+}
+
+div {
+  width: 100rem;
+}
+form,
+.homepage {
+  margin: 0 auto;
+  width: 30rem;
+}
+
+button {
+  margin: 0.5rem;
+}
+
+li {
+  padding: 1rem;
+}
+.post-block {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
