@@ -2,15 +2,6 @@ body {
   width: 100vw;
 }
 
-div {
-  width: 100rem;
-}
-form,
-.homepage {
-  margin: 0 auto;
-  width: 30rem;
-}
-
 button {
   margin: 0.5rem;
 }
@@ -18,6 +9,64 @@ button {
 li {
   padding: 1rem;
 }
+
+.post-create-card,
+.homepage,
+.post-card {
+  margin: 0 auto;
+  width: 30rem;
+}
+
 .post-block {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.post-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.post-header {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.post-title {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.post-author {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: #888;
+}
+
+.post-content {
+  margin-bottom: 20px;
+}
+
+.comments-section {
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.comment {
+  margin-bottom: 15px;
+}
+
+.comment-author {
+  font-weight: bold;
+  color: #333;
+}
+
+.comment-text {
+  margin: 5px 0 0;
+  color: #555;
 }

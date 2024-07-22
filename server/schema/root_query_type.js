@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const ObjectId = require("mongoose").Types.ObjectId;
 const graphql = require("graphql");
 const { GraphQLObjectType, GraphQLList, GraphQLID, GraphQLNonNull } = graphql;
 const PostType = require("./post");
@@ -26,9 +25,10 @@ const RootQuery = new GraphQLObjectType({
     },
     post: {
       type: PostType,
-      args: { id: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve(parentValue, { id }) {
-        return Post.find({ _id: id });
+      args: { postId: { type: new GraphQLNonNull(GraphQLID) } },
+      async resolve(parentValue, { postId }) {
+        const post = await Post.findById({ _id: postId });
+        return post;
       },
     },
     posts: {

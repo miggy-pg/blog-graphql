@@ -1,6 +1,6 @@
 import React from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { getPosts } from "../../queries/queryPost";
+import { GET_POSTS } from "../../queries/queryPost";
 import { useNavigate } from "react-router";
 import Button from "../Button";
 import { useSearchParams } from "react-router-dom";
@@ -15,7 +15,7 @@ const DELETE_POST = gql`
 
 function PostList() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { loading, error, data, refetch } = useQuery(getPosts);
+  const { loading, error, data, refetch } = useQuery(GET_POSTS);
 
   const [deletePost] = useMutation(DELETE_POST, {
     onCompleted: () => refetch(),

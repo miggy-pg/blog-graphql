@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-const getPosts = gql`
+const GET_POSTS = gql`
   query GetPosts {
     posts {
       id
@@ -10,13 +10,19 @@ const getPosts = gql`
   }
 `;
 
-const getPost = gql`
+const GET_POST = gql`
   query getPost($postId: ID!) {
     post(postId: $postId) {
       title
-      comments
+      content
+      comments {
+        content
+      }
+      authorId {
+        username
+      }
     }
   }
 `;
 
-export { getPosts };
+export { GET_POSTS, GET_POST };

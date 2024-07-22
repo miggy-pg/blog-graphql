@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 import React from "react";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { getPosts } from "../../queries/queryPost";
+import { GET_POSTS } from "../../queries/queryPost";
 import Button from "../Button";
 
 const ADD_POST = gql`
@@ -19,7 +19,7 @@ function PostCreate() {
   const navigate = useNavigate();
   const [addPost, { data, loading, error, reset }] = useMutation(ADD_POST, {
     refetchQueries: [
-      getPosts, // DocumentNode object parsed with gql
+      GET_POSTS, // DocumentNode object parsed with gql
       "posts", // Query name
     ],
   });
@@ -44,7 +44,7 @@ function PostCreate() {
   };
 
   return (
-    <div>
+    <div className="post-create-card">
       <FormProvider {...methods}>
         <h2>Create Post</h2>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
