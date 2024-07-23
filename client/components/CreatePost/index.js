@@ -24,9 +24,6 @@ function PostCreate() {
     ],
   });
 
-  console.log("Loading: ", loading);
-  console.log("Data: ", data);
-
   const onSubmit = (data, ev) => {
     ev.preventDefault();
     try {

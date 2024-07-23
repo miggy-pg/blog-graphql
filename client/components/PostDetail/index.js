@@ -11,6 +11,7 @@ function PostDetail() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error.message}</p>;
 
+  // 'post' data only exist after loading
   const { post } = data || {};
   console.log("post: ", post);
   return (
