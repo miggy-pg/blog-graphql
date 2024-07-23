@@ -1,25 +1,25 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema(
   {
     postId: {
       type: Schema.Types.ObjectId,
-      ref: 'post'
+      ref: "post",
     },
     authorId: {
       type: Schema.Types.ObjectId,
-      ref: "user"
+      ref: "user",
     },
     content: { type: String },
   },
-  { timestamps: true}
+  { timestamps: true }
 );
 
-CommentSchema.statics.findPostComments = function(postId) {
-  return this.find({ postId }, {__v: 0, _id:0}).sort({ createdAt: 1 });
+CommentSchema.statics.findPostComments = function (postId) {
+  return this.find({ postId }, { __v: 0, _id: 0 }).sort({ createdAt: 1 });
 };
 
-const Comment = mongoose.model('comment', CommentSchema);
+const Comment = mongoose.model("comment", CommentSchema);
 
-module.exports = Comment
+module.exports = Comment;

@@ -112,6 +112,7 @@ Here's a quick overview of the relationships:
 - Remember, the big takeaway here was that when Apollo fetches data for our application, it really has no idea about what piece of data is what. So we have to help APollo understand which piece of data is which that allows it to more effectively tell the dark side of our application to when a certain piece of data is updates. So in general, the big challenge here is how do we tell Apollo about what record is what! To do this, we can do this by using:
 
 ```javascript
+// Note: This is a pseudocode and not our actual code
 // index.js
 const client = new ApolloClient({
   // This piece of configuration right here takes every single piece of data that is fetched by our Apollo
@@ -139,3 +140,38 @@ const mutation = gql`
   }
 `;
 ```
+
+## Optimistic UI Updates
+
+![](screenshots/optimistic_ui_updates.png)
+
+1. When we call a mutation, we ask for any response and guess at what the response is when it comes back.
+2. Apollo is going to take that guess of what we think the response is going to be and it's going to apply to the data insie of its internal store.
+3. It will then instantly going to rerender our React application with this new guess at what our data should be.
+   (Simultaneously, the mutation is going to be issued to our backend as network request. So that request is going to be pending for that quarter or half a second that we are already waiting)
+
+4. When the mutation resolves and the response comes back, Apollo will take that response and then update it local copy of data to match whatever the response is actually said. And ten it will update our UI with whatever the real data is from the backend server.
+
+```javascript
+// Thi is a pseudocode
+const onLike (id, likes){
+  addLike({
+    variables: { id },
+    optimisticResponse: {
+      // The reason why the value here is "Mutation" is generally because we are saying 'what is the event happening?' - and that is we are using 'Mutation'
+      __typename: "Mutation",
+      // Next part are the properties that we expect to see from the response from the backend server(see )
+      likeLyric: {
+        id,
+        __typename: "LyricType",
+        likes: likes + 1
+      }
+    }
+  })
+}
+
+
+```
+
+likeLyric response log:
+![alt text](screenshots/likeLyric_response_log.png)
