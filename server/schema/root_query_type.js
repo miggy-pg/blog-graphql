@@ -47,8 +47,8 @@ const RootQuery = new GraphQLObjectType({
     postComments: {
       type: new GraphQLList(CommentType),
       args: { postId: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve(parnetValue, { postId }) {
-        return Comment.findPostComments(postId);
+      resolve(parentValue, { postId }) {
+        return Post.findComments(postId);
       },
     },
     comments: {

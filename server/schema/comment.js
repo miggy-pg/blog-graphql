@@ -1,36 +1,33 @@
-const mongoose = require('mongoose');
-const graphql = require('graphql');
-const {
-  GraphQLObjectType,
-  GraphQLID,
-  GraphQLInt,
-  GraphQLString,
-} = graphql;
-const GraphQLDate = require('graphql-date')
-const User = mongoose.model('user');
-const UserType = require('./user')
+const mongoose = require("mongoose");
+const graphql = require("graphql");
+const { GraphQLObjectType, GraphQLID, GraphQLInt, GraphQLString } = graphql;
+const GraphQLDate = require("graphql-date");
+const User = mongoose.model("user");
+const UserType = require("./user");
 
 const CommentType = new GraphQLObjectType({
-  name:  'CommentType',
+  name: "CommentType",
   fields: () => ({
     id: { type: GraphQLID },
-    postId: { type: GraphQLInt},
+    postId: { type: GraphQLID },
     content: { type: GraphQLString },
-    createdAt: {type: GraphQLDate},
+    createdAt: { type: GraphQLDate },
     author: {
       type: UserType,
       resolve(parentValue) {
-        return User.findById(parentValue.authorId).populate('user')
-          .then(user => {
-            console.log("user: ", user)
-            return user.name
-          }).catch(err =>{
-            console.log(err);
-            return
+        const Comment = mongoose.model("comment");
+        return Comment.findById(parentValue.id)
+          .populate("authorId")
+          .then((comment) => {
+            return comment.authorId;
           })
-      }
-    }
-  })
+          .catch((err) => {
+            console.log(err);
+            return;
+          });
+      },
+    },
+  }),
 });
 
 module.exports = CommentType;

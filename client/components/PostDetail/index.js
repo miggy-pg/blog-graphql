@@ -36,10 +36,10 @@ function PostDetail() {
         </form>
       </FormProvider>
       <div className="comments-section">
-        {post.comments.map((post) => (
+        {post.comments.map((comment) => (
           <div className="comment">
-            <p className="comment-author">Comment Author 1</p>
-            <p className="comment-text">This is a comment.</p>
+            <p className="comment-author">{comment.author.name}</p>
+            <p className="comment-text">{comment.content}</p>
           </div>
         ))}
       </div>

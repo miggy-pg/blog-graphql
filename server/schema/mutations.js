@@ -30,7 +30,7 @@ const mutation = new GraphQLObjectType({
         content: { type: GraphQLString },
       },
       resolve(parentValue, { content, postId, authorId }) {
-        return new Comment({ authorId, postId, content }).save();
+        return Post.addComment(authorId, postId, content);
       },
     },
     addUser: {

@@ -17,6 +17,9 @@ const GET_POST = gql`
       content
       comments {
         content
+        author {
+          name
+        }
       }
       authorId {
         username
