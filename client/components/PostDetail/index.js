@@ -1,13 +1,19 @@
 import React from "react";
 import { GET_POST } from "../../queries/queryPost";
-import { useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
+import Button from "../Button";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
 
 function PostDetail() {
+  const methods = useForm();
   const postId = window.location.href.split("/")[4];
   const { loading, error, data, refetch } = useQuery(GET_POST, {
     variables: { postId },
   });
 
+  const onSubmit = (data, ev) => {
+    console.log("data", data);
+  };
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error.message}</p>;
 
@@ -23,6 +29,12 @@ function PostDetail() {
       <div className="post-content">
         <p>{post.content}</p>
       </div>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <CommentInput />
+          <Button label="Submit" type="submit" />
+        </form>
+      </FormProvider>
       <div className="comments-section">
         {post.comments.map((post) => (
           <div className="comment">
@@ -31,8 +43,15 @@ function PostDetail() {
           </div>
         ))}
       </div>
+      <Button label="Back" type="navigate" to="/" />
     </div>
   );
+}
+
+function CommentInput() {
+  const { register } = useFormContext();
+
+  return <input {...register("content")} />;
 }
 
 export default PostDetail;

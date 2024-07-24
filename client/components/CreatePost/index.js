@@ -49,10 +49,12 @@ function PostCreate() {
           {error && (
             <div>
               <p>Submission failed: {error.message}</p>
-              <Button label="Dismiss" action={() => reset()} />
+              <button type="button" onClick={() => reset()}>
+                Dismiss
+              </button>
             </div>
           )}
-          <Button label="Back" action={() => navigate("")} />
+          <Button label="Back" type="navigate" to="/" />
         </form>
       </FormProvider>
     </div>

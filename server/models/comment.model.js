@@ -17,7 +17,9 @@ const CommentSchema = new Schema(
 );
 
 CommentSchema.statics.findPostComments = function (postId) {
-  return this.find({ postId }, { __v: 0, _id: 0 }).sort({ createdAt: 1 });
+  return this.find({ postId }, { __v: 0, _id: 0 })
+    .sort({ createdAt: 1 })
+    .populate("authorId");
 };
 
 const Comment = mongoose.model("comment", CommentSchema);

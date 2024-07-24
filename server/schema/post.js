@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const graphql = require("graphql");
 const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 const User = mongoose.model("user");
-const Comment = mongoose.model("comment");
+const Post = mongoose.model("post");
 const CommentType = require("./comment");
 const UserType = require("./user");
 
@@ -15,7 +15,7 @@ const PostType = new GraphQLObjectType({
     comments: {
       type: new GraphQLList(CommentType),
       resolve(parentValue) {
-        return Comment.findPostComments(parentValue.id);
+        return Comment.findComments(parentValue.id);
       },
     },
     authorId: {

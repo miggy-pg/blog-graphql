@@ -160,7 +160,7 @@ const onLike (id, likes){
     optimisticResponse: {
       // The reason why the value here is "Mutation" is generally because we are saying 'what is the event happening?' - and that is we are using 'Mutation'
       __typename: "Mutation",
-      // Next part are the properties that we expect to see from the response from the backend server(see )
+      // Next part are the properties that we expect to see from the response from the backend server(see likeLyric response log image below)
       likeLyric: {
         id,
         __typename: "LyricType",
@@ -173,5 +173,6 @@ const onLike (id, likes){
 
 ```
 
-likeLyric response log:
-![alt text](screenshots/likeLyric_response_log.png)
+#### likeLyric response log:
+
+![](screenshots/likeLyric_response_log.png)
