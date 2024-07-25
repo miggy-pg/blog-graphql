@@ -14,47 +14,74 @@ const RootQuery = new GraphQLObjectType({
     users: {
       type: new GraphQLList(UserType),
       resolve() {
-        return User.find({});
+        try {
+          return User.find({});
+        } catch (err) {
+          console.log("Error finding for all users. ", err);
+        }
       },
     },
     user: {
       type: new GraphQLList(UserType),
       resolve(parentValue, { id }) {
-        return User.findById({ id });
+        try {
+          return User.findById(id);
+        } catch (err) {
+          console.log("Error finding for user. ", err);
+        }
       },
     },
     post: {
       type: PostType,
       args: { postId: { type: new GraphQLNonNull(GraphQLID) } },
-      async resolve(parentValue, { postId }) {
-        const post = await Post.findById({ _id: postId });
-        return post;
+      resolve(parentValue, { postId }) {
+        try {
+          return Post.findById(postId);
+        } catch (err) {
+          console.log("Error find post. ", err);
+        }
       },
     },
     posts: {
       type: new GraphQLList(PostType),
       resolve() {
-        return Post.find({});
+        try {
+          return Post.find({});
+        } catch (err) {
+          console.log("Error finding for all posts. ", err);
+        }
       },
     },
     postsByAuthor: {
       type: new GraphQLList(PostType),
       args: { authorId: { type: new GraphQLNonNull(GraphQLID) } },
       resolve(parentValue, { authorId }) {
-        return Post.findPostsByAuthor(authorId);
+        try {
+          return Post.findPostsByAuthor(authorId);
+        } catch (err) {
+          console.log("Error finding all posts by author. ", err);
+        }
       },
     },
     postComments: {
       type: new GraphQLList(CommentType),
       args: { postId: { type: new GraphQLNonNull(GraphQLID) } },
       resolve(parentValue, { postId }) {
-        return Post.findComments(postId);
+        try {
+          return Post.findComments(postId);
+        } catch (err) {
+          console.log("Error finding all comments in a post. ", err);
+        }
       },
     },
     comments: {
       type: CommentType,
       resolve() {
-        return Comment.find({});
+        try {
+          return Comment.find({});
+        } catch (err) {
+          console.log("Error finding all comments. ", err);
+        }
       },
     },
   }),

@@ -1,8 +1,16 @@
 import React from "react";
 import { GET_POST } from "../../queries/queryPost";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import Button from "../Button";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
+
+const ADD_COMMENT = gql`
+  mutation AddCommentToPost($postId: ID!, $authorId: ID!, $content: String) {
+    addCommentToPost(postId: $postId, authorId: $authorId, content: $content) {
+      content
+    }
+  }
+`;
 
 function PostDetail() {
   const methods = useForm();
@@ -10,14 +18,24 @@ function PostDetail() {
   const { loading, error, data, refetch } = useQuery(GET_POST, {
     variables: { postId },
   });
+  const [
+    handleAddComment,
+    { loading: addCommentLoading, error: addCommentErr, data: comments },
+  ] = useMutation(ADD_COMMENT);
 
   const onSubmit = (data, ev) => {
-    console.log("data", data);
+    handleAddComment({
+      variables: {
+        postId: postId,
+        authorId: `${process.env.USER_ID}`,
+        content: data.content,
+      },
+    });
   };
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error.message}</p>;
 
-  // 'post' data only exist after loading
+  // 'post' data only exist after loading which is why this line exist after 'loading' is done
   const { post } = data || {};
   console.log("post: ", post);
   return (
@@ -37,7 +55,8 @@ function PostDetail() {
       </FormProvider>
       <div className="comments-section">
         {post.comments.map((comment) => (
-          <div className="comment">
+          <div key={comment.id} className="comment">
+            {console.log("comment: ", process.env.USER_ID)}
             <p className="comment-author">{comment.author.name}</p>
             <p className="comment-text">{comment.content}</p>
           </div>

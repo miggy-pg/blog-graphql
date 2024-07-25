@@ -17,19 +17,22 @@ const ADD_POST = gql`
 function PostCreate() {
   const methods = useForm();
   const navigate = useNavigate();
-  const [addPost, { data, loading, error, reset }] = useMutation(ADD_POST, {
-    refetchQueries: [
-      GET_POSTS, // DocumentNode object parsed with gql
-      "posts", // Query name
-    ],
-  });
+  const [handleAddPost, { data, loading, error, reset }] = useMutation(
+    ADD_POST,
+    {
+      refetchQueries: [
+        GET_POSTS, // DocumentNode object parsed with gql
+        "posts", // Query name
+      ],
+    }
+  );
 
   const onSubmit = (data, ev) => {
     ev.preventDefault();
     try {
-      addPost({
+      handleAddPost({
         variables: {
-          authorId: "6690063205ed072a96da7a12",
+          authorId: `${import.meta.env.USER_ID}`,
           title: data.title,
           content: data.content,
         },

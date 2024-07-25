@@ -14,17 +14,12 @@ const CommentType = new GraphQLObjectType({
     createdAt: { type: GraphQLDate },
     author: {
       type: UserType,
-      resolve(parentValue) {
+      async resolve(parentValue) {
         const Comment = mongoose.model("comment");
-        return Comment.findById(parentValue.id)
-          .populate("authorId")
-          .then((comment) => {
-            return comment.authorId;
-          })
-          .catch((err) => {
-            console.log(err);
-            return;
-          });
+        const comment = await Comment.findById(parentValue.id).populate(
+          "authorId"
+        );
+        return comment.authorId;
       },
     },
   }),

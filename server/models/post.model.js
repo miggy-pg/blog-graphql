@@ -26,47 +26,44 @@ const PostSchema = new Schema(
 );
 
 PostSchema.statics.findComments = async function (postId) {
-  const post = await this.findById(postId, { __v: 0, _id: 0 })
-    .sort({
-      createdAt: 1,
-    })
-    .populate("comments");
-  return post.comments;
+  try {
+    const post = await this.findById(postId, { __v: 0, _id: 0 })
+      .sort({
+        createdAt: 1,
+      })
+      .populate("comments");
+    return post.comments;
+  } catch (err) {
+    console.log("Error finding comments. ", err);
+  }
 };
 
-PostSchema.statics.addComment = function (authorId, postId, content) {
-  const Comment = mongoose.model("comment");
-  return this.findById(postId).then((post) => {
-    const comment = new Comment({ authorId, post, content });
-    post.comments.push(comment);
-    return Promise.all([comment.save(), post.save()]).then(
-      (comment, post) => post
-    );
-  });
+PostSchema.statics.addComment = async function (authorId, postId, content) {
+  try {
+    const Comment = mongoose.model("comment");
+    const post = await this.findById(postId);
+    const newComment = await new Comment({ authorId, post, content }).save();
+    post.comments.push(newComment);
+    post.save();
+    return post;
+  } catch (err) {
+    console.log("Error adding comment to a post. ", err);
+  }
 };
-
-// We can also use this approach on adding comments to a post
-// PostSchema.statics.addComment = async function (authorId, postId, content) {
-//   const Comment = mongoose.model("comment");
-//   const post = await this.findById(postId);
-//   const newComment = await new Comment({ authorId, post, content }).save();
-//   post.comments.push(newComment);
-//   post.save();
-//   return post;
-// };
 
 PostSchema.statics.findPostsByAuthor = function (authorId) {
-  return this.find(
-    { authorId },
-    {
-      __v: 0,
-      _id: 0,
-    }
-  )
-    .sort({ createdAt: 1 })
-    .then((post) => {
-      return { post };
-    });
+  try {
+    const authorsPost = this.find(
+      { authorId },
+      {
+        __v: 0,
+        _id: 0,
+      }
+    ).sort({ createdAt: 1 });
+    return authorsPost;
+  } catch (err) {
+    console.log("Error finding all posts by author. ", err);
+  }
 };
 
 const Post = mongoose.model("post", PostSchema);

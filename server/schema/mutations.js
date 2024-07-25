@@ -19,7 +19,11 @@ const mutation = new GraphQLObjectType({
         content: { type: GraphQLString },
       },
       resolve(parentValue, { title, content, authorId }) {
-        return new Post({ title, content, authorId }).save();
+        try {
+          return new Post({ title, content, authorId }).save();
+        } catch (err) {
+          console.log("Error creating post. ", err);
+        }
       },
     },
     addCommentToPost: {
@@ -30,7 +34,11 @@ const mutation = new GraphQLObjectType({
         content: { type: GraphQLString },
       },
       resolve(parentValue, { content, postId, authorId }) {
-        return Post.addComment(authorId, postId, content);
+        try {
+          return Post.addComment(authorId, postId, content);
+        } catch (err) {
+          console.log("Error adding post to comment. ", err);
+        }
       },
     },
     addUser: {
@@ -42,14 +50,22 @@ const mutation = new GraphQLObjectType({
         password: { type: GraphQLString },
       },
       resolve(parentValue, { name, username, email, password }) {
-        return new User({ name, username, email, password }).save();
+        try {
+          return new User({ name, username, email, password }).save();
+        } catch (err) {
+          console.log("Error adding user. ", err);
+        }
       },
     },
     deletePost: {
       type: PostType,
       args: { postId: { type: GraphQLID } },
       resolve(parentValue, { postId }) {
-        return Post.findOneAndDelete({ _id: postId });
+        try {
+          return Post.findOneAndDelete({ _id: postId });
+        } catch (err) {
+          console.log("Error deleting post. ", err);
+        }
       },
     },
   },

@@ -13,15 +13,18 @@ const GET_POSTS = gql`
 const GET_POST = gql`
   query getPost($postId: ID!) {
     post(postId: $postId) {
+      id
       title
       content
       comments {
+        id
         content
         author {
           name
         }
       }
       authorId {
+        id
         username
       }
     }
