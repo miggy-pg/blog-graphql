@@ -2,7 +2,12 @@ import React from "react";
 import { Route, Routes } from "react-router";
 import { BrowserRouter } from "react-router-dom";
 import * as ReactDOM from "react-dom/client";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  defaultDataIdFromObject,
+} from "@apollo/client";
 import { createHttpLink } from "@apollo/client";
 
 import PostDetail from "./components/PostDetail";
@@ -17,7 +22,22 @@ const httpLink = new createHttpLink({
 
 const client = new ApolloClient({
   link: httpLink,
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    dataIdFromObject(responseObject) {
+      console.log("responseObject: ", responseObject);
+      switch (responseObject.__typename) {
+        case "CommentType":
+          return `CommentType:${responseObject.id}`;
+        case "UserType":
+          return `UserType:${responseObject.id}`;
+        case "PostType":
+          return `PostType:${responseObject.id}`;
+        default:
+          return defaultDataIdFromObject(responseObject);
+      }
+      // return responseObject.id;
+    },
+  }),
 });
 
 const Root = () => {

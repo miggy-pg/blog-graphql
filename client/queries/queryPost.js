@@ -20,6 +20,7 @@ const GET_POST = gql`
         id
         content
         author {
+          id
           name
         }
       }

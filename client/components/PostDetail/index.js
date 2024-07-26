@@ -7,6 +7,7 @@ import { FormProvider, useForm, useFormContext } from "react-hook-form";
 const ADD_COMMENT = gql`
   mutation AddCommentToPost($postId: ID!, $authorId: ID!, $content: String) {
     addCommentToPost(postId: $postId, authorId: $authorId, content: $content) {
+      id
       content
     }
   }
