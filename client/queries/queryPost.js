@@ -18,6 +18,7 @@ const GET_POST = gql`
       content
       comments {
         id
+        likes
         content
         author {
           id

@@ -176,3 +176,71 @@ const onLike (id, likes){
 #### likeLyric response log:
 
 ![](screenshots/likeLyric_response_log.png)
+
+## Apollo readQuery and writeQuery
+
+### readQuery
+
+- Enables you to execute a GraphQL query directly on your cache,
+- If your cache contains data for all of the query's fields, **readQuery** returns an object that matches the shape of the query.
+- To successfully execute queries with variables, the field with the specified argument must already be in the cache.
+  Otherwise the client treats the data as missing and **readQuery** returns null.
+- If the cache is missing data for any of the query's fields, **readQuery** returns null. It does not attempt to fetch data from your GraphQL server.
+- The query you provide readQuery can include fields that are not defined in your GraphQL server's schema (i.e., local-only fields).
+
+### writeQuery
+
+- Enables you to write data to your cache in a shape that matches a GraphQL query. It resembles readQuery, except that it requires a data option
+
+Note the following about writeQuery:
+
+- Any changes you make to cached data with writeQuery are not pushed to your GraphQL server. If you reload your environment, these changes disappear.
+- The shape of your query is not enforced by your GraphQL server's schema:
+- - The query can include fields that are not present in your schema.
+- - You can (but usually shouldn't) provide values for schema fields that are invalid according to your schema.
+
+```javascript
+// see more at PostDetail.js
+
+const ADD_COMMENT = gql`
+  mutation AddCommentToPost($postId: ID!, $authorId: ID!, $content: String) {
+    addCommentToPost(postId: $postId, authorId: $authorId, content: $content) {
+      id
+      content
+    }
+  }
+`;
+
+const onSubmit = (data, ev) => {
+  handleAddComment({
+    variables: {
+      postId: postId,
+      authorId: `${process.env.USER_ID}`,
+      content: data.content,
+    },
+    update: (cache, { data: { addCommentToPost } }) => {
+      // Here is the readQuery
+      // The 'addCommentToPost' field here refers to the root field of the mutation response(see mutation's 'addCommentToPost'). It’s defined in your GraphQL schema to correspond to the data returned from the mutation.
+
+      const existingData = cache.readQuery({
+        query: GET_POST,
+        variables: {
+          postId,
+        },
+      });
+
+      // Here is the writeQuery
+      cache.writeQuery({
+        query: GET_POST,
+        data: {
+          post: {
+            ...existingData.post,
+            comments: [...existingData.post.comments, addCommentToPost],
+          },
+        },
+        variables: { postId },
+      });
+    },
+  });
+};
+```

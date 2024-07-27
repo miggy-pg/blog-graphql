@@ -11,22 +11,7 @@ const httpLink = new createHttpLink({
 
 const client = new ApolloClient({
   link: httpLink,
-  cache: new InMemoryCache({
-    dataIdFromObject(responseObject) {
-      console.log("responseObject: ", responseObject);
-      switch (responseObject.__typename) {
-        case "CommentType":
-          return `CommentType:${responseObject.id}`;
-        case "UserType":
-          return `UserType:${responseObject.id}`;
-        case "PostType":
-          return `PostType:${responseObject.id}`;
-        default:
-          return defaultDataIdFromObject(responseObject);
-      }
-      // return responseObject.id;
-    },
-  }),
+  cache: new InMemoryCache({}),
 });
 
 export default client;

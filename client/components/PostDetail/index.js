@@ -1,8 +1,8 @@
 import React from "react";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
+
 import Button from "../Button";
-import client from "../../apolloClient";
 import { GET_POST } from "../../queries/queryPost";
 
 const ADD_COMMENT = gql`
@@ -14,40 +14,83 @@ const ADD_COMMENT = gql`
   }
 `;
 
+const ADD_LIKE_TO_COMMENT = gql`
+  mutation AddLikeToComment($commentId: ID!) {
+    addLikeToComment(commentId: $commentId) {
+      author {
+        id
+        name
+      }
+      id
+      likes
+      content
+    }
+  }
+`;
+
 function PostDetail() {
   const methods = useForm();
   const postId = window.location.href.split("/")[4];
   const { loading, error, data } = useQuery(GET_POST, {
     variables: { postId },
   });
-  const [handleAddComment] = useMutation(ADD_COMMENT);
+  const [addCommentMutation] = useMutation(ADD_COMMENT);
+  const [addLikeCommentMutation] = useMutation(ADD_LIKE_TO_COMMENT);
 
-  const onSubmit = (data, ev) => {
-    handleAddComment({
+  const onSubmit = (formData, ev) => {
+    addCommentMutation({
       variables: {
         postId: postId,
         authorId: `${process.env.USER_ID}`,
-        content: data.content,
+        content: formData.content,
       },
       update: (cache, { data: { addCommentToPost } }) => {
-        console.log("data: ", data);
-        console.log("addCommentToPost: ", addCommentToPost);
-        const data = cache.readQuery({
+        const cachedPost = cache.readQuery({
           query: GET_POST,
           variables: {
             postId,
           },
         });
-
+        console.log("dataAddingComment: ", data);
+        console.log("existingData: ", cachedPost);
         cache.writeQuery({
           query: GET_POST,
           data: {
             post: {
-              ...data.post,
-              comments: [...data.post.comments, addCommentToPost],
+              ...cachedPost.post,
+              comments: [addCommentToPost, ...cachedPost.post.comments],
             },
           },
           variables: { postId },
+        });
+      },
+      onCompleted: () => {
+        methods.reset();
+      },
+    });
+  };
+
+  const handleAddLikeToComment = (commentId) => {
+    addLikeCommentMutation({
+      variables: { commentId },
+      update: (cache, { data: { addLikeToComment } }) => {
+        const cachedPost = cache.readQuery({
+          query: GET_POST,
+          variables: { postId },
+        });
+
+        cache.writeQuery({
+          // query: GET_POST,
+          query: GET_COMMENT,
+          data: {
+            comment: {
+              ...cachedPost.post,
+              comments: [...cachedPost.post.comments, addLikeToComment],
+            },
+          },
+          variables: {
+            postId,
+          },
         });
       },
     });
@@ -75,11 +118,20 @@ function PostDetail() {
         </form>
       </FormProvider>
       <div className="comments-section">
-        {post.comments.map((comment) => (
-          <div key={comment.id} className="comment">
-            {console.log("comment: ", process.env.USER_ID)}
+        {post.comments.map((comment, index) => (
+          <div key={index} className="comment">
             <p className="comment-author">{comment.author.name}</p>
             <p className="comment-text">{comment.content}</p>
+            <span>
+              {comment?.likes}
+              <button
+                className="comment-btn"
+                onClick={() => handleAddLikeToComment(comment.id)}
+              >
+                Like
+              </button>
+              <button className="comment-btn">Delete</button>
+            </span>
           </div>
         ))}
       </div>

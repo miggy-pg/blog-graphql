@@ -38,7 +38,7 @@ const RootQuery = new GraphQLObjectType({
         try {
           return Post.findById(postId);
         } catch (err) {
-          console.log("Error find post. ", err);
+          console.log("Error finding post. ", err);
         }
       },
     },
@@ -71,6 +71,17 @@ const RootQuery = new GraphQLObjectType({
           return Post.findComments(postId);
         } catch (err) {
           console.log("Error finding all comments in a post. ", err);
+        }
+      },
+    },
+    comment: {
+      type: CommentType,
+      args: { commentId: { type: new GraphQLNonNull(GraphQLID) } },
+      resolve(parentValue, { commentId }) {
+        try {
+          return Comment.findById(commentId);
+        } catch (err) {
+          console.log("Error finding comment. ", err);
         }
       },
     },

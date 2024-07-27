@@ -41,6 +41,19 @@ const mutation = new GraphQLObjectType({
         }
       },
     },
+    addLikeToComment: {
+      type: CommentType,
+      args: {
+        commentId: { type: GraphQLID },
+      },
+      resolve(parentValue, { commentId }) {
+        try {
+          return Comment.likes(commentId);
+        } catch (err) {
+          console.log("Error adding like to comment. ", err);
+        }
+      },
+    },
     addUser: {
       type: UserType,
       args: {

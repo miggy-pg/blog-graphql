@@ -15,13 +15,21 @@ const PostType = new GraphQLObjectType({
     comments: {
       type: new GraphQLList(CommentType),
       resolve(parentValue) {
-        return Post.findComments(parentValue.id);
+        try {
+          return Post.findComments(parentValue.id);
+        } catch (err) {
+          console.log("Error finding all the comments. ", err);
+        }
       },
     },
     authorId: {
       type: UserType,
       resolve(parentValue) {
-        return User.findById({ _id: parentValue.authorId });
+        try {
+          return User.findById(parentValue.authorId);
+        } catch (err) {
+          console.log("Error finding the author of this post. ", err);
+        }
       },
     },
   }),

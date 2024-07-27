@@ -12,14 +12,19 @@ const CommentType = new GraphQLObjectType({
     postId: { type: GraphQLID },
     content: { type: GraphQLString },
     createdAt: { type: GraphQLDate },
+    likes: { type: GraphQLInt },
     author: {
       type: UserType,
       async resolve(parentValue) {
         const Comment = mongoose.model("comment");
-        const comment = await Comment.findById(parentValue.id).populate(
-          "authorId"
-        );
-        return comment.authorId;
+        try {
+          const comment = await Comment.findById(parentValue.id).populate(
+            "authorId"
+          );
+          return comment.authorId;
+        } catch (err) {
+          console.log("Error populating the author.", err);
+        }
       },
     },
   }),
