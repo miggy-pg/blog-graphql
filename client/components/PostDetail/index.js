@@ -1,8 +1,9 @@
 import React from "react";
-import { GET_POST } from "../../queries/queryPost";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import Button from "../Button";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import Button from "../Button";
+import client from "../../apolloClient";
+import { GET_POST } from "../../queries/queryPost";
 
 const ADD_COMMENT = gql`
   mutation AddCommentToPost($postId: ID!, $authorId: ID!, $content: String) {
@@ -16,13 +17,10 @@ const ADD_COMMENT = gql`
 function PostDetail() {
   const methods = useForm();
   const postId = window.location.href.split("/")[4];
-  const { loading, error, data, refetch } = useQuery(GET_POST, {
+  const { loading, error, data } = useQuery(GET_POST, {
     variables: { postId },
   });
-  const [
-    handleAddComment,
-    { loading: addCommentLoading, error: addCommentErr, data: comments },
-  ] = useMutation(ADD_COMMENT);
+  const [handleAddComment] = useMutation(ADD_COMMENT);
 
   const onSubmit = (data, ev) => {
     handleAddComment({
@@ -31,8 +29,30 @@ function PostDetail() {
         authorId: `${process.env.USER_ID}`,
         content: data.content,
       },
+      update: (cache, { data: { addCommentToPost } }) => {
+        console.log("data: ", data);
+        console.log("addCommentToPost: ", addCommentToPost);
+        const data = cache.readQuery({
+          query: GET_POST,
+          variables: {
+            postId,
+          },
+        });
+
+        cache.writeQuery({
+          query: GET_POST,
+          data: {
+            post: {
+              ...data.post,
+              comments: [...data.post.comments, addCommentToPost],
+            },
+          },
+          variables: { postId },
+        });
+      },
     });
   };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error.message}</p>;
 
