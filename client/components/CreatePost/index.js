@@ -32,12 +32,14 @@ function PostCreate() {
     try {
       handleAddPost({
         variables: {
-          authorId: `${import.meta.env.USER_ID}`,
+          authorId: `${process.env.USER_ID}`,
           title: data.title,
           content: data.content,
         },
+        onCompleted: () => {
+          navigate("/");
+        },
       });
-      navigate("/");
     } catch (err) {
       console.log("Submission error:", err);
     }

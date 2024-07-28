@@ -69,6 +69,13 @@ function PostDetail() {
   };
 
   const handleAddLikeToComment = (commentId) => {
+    const { post } = data;
+    // Find the comment in the current post data
+    const likedCommentIndex = post.comments.findIndex(
+      (comment) => comment.id === commentId
+    );
+    if (likedCommentIndex === -1) return;
+    const currentLikes = post.comments[likedCommentIndex].likes;
     addLikeCommentMutation({
       variables: { commentId },
       update: (cache, { data: { addLikeToComment } }) => {
@@ -106,6 +113,16 @@ function PostDetail() {
             postId,
           },
         });
+      },
+      optimisticResponse: {
+        __typename: "Mutation",
+        addLikeToComment: {
+          __typename: "CommentType",
+          id: commentId,
+          likes: currentLikes + 1,
+          content: post.comments[likedCommentIndex].content,
+          author: post.comments[likedCommentIndex].author,
+        },
       },
     });
   };
