@@ -45,20 +45,18 @@ function PostDetail() {
         content: formData.content,
       },
       update: (cache, { data: { addCommentToPost } }) => {
-        const cachedPost = cache.readQuery({
+        const { post } = cache.readQuery({
           query: GET_POST,
           variables: {
             postId,
           },
         });
-        console.log("dataAddingComment: ", data);
-        console.log("existingData: ", cachedPost);
         cache.writeQuery({
           query: GET_POST,
           data: {
             post: {
-              ...cachedPost.post,
-              comments: [addCommentToPost, ...cachedPost.post.comments],
+              ...post,
+              comments: [...post.comments, addCommentToPost],
             },
           },
           variables: { postId },
@@ -74,18 +72,34 @@ function PostDetail() {
     addLikeCommentMutation({
       variables: { commentId },
       update: (cache, { data: { addLikeToComment } }) => {
-        const cachedPost = cache.readQuery({
+        const { post } = cache.readQuery({
           query: GET_POST,
           variables: { postId },
         });
 
+        const likedCommentIndex = post.comments.findIndex(
+          (comment) => comment.id == commentId
+        );
+        // Ensure the comment is found
+        if (likedCommentIndex === -1) return;
+
+        const updatedComment = {
+          ...post.comments[likedCommentIndex],
+          likes: addLikeToComment.likes,
+        };
+
+        // Create a new array with the updated comment
+        const updatedComments = [
+          ...post.comments.slice(0, likedCommentIndex),
+          updatedComment,
+          ...post.comments.slice(likedCommentIndex + 1),
+        ];
         cache.writeQuery({
-          // query: GET_POST,
-          query: GET_COMMENT,
+          query: GET_POST,
           data: {
-            comment: {
-              ...cachedPost.post,
-              comments: [...cachedPost.post.comments, addLikeToComment],
+            post: {
+              ...post,
+              comments: updatedComments,
             },
           },
           variables: {
