@@ -28,7 +28,6 @@ function PostCreate() {
   );
 
   const onSubmit = (data, ev) => {
-    ev.preventDefault();
     try {
       handleAddPost({
         variables: {
@@ -41,7 +40,7 @@ function PostCreate() {
         },
       });
     } catch (err) {
-      console.log("Submission error:", err);
+      console.log("Failed to create new post.", err);
     }
   };
 

@@ -5,6 +5,7 @@ const GET_POSTS = gql`
     posts {
       id
       title
+      likes
       content
     }
   }

@@ -26,6 +26,19 @@ const mutation = new GraphQLObjectType({
         }
       },
     },
+    addLikeToPost: {
+      type: PostType,
+      args: {
+        postId: { type: GraphQLID },
+      },
+      resolve(parentValue, { postId }) {
+        try {
+          return Post.likes(postId);
+        } catch (err) {
+          console.log("Failed adding like to post. ", err);
+        }
+      },
+    },
     addCommentToPost: {
       type: CommentType,
       args: {
@@ -37,7 +50,7 @@ const mutation = new GraphQLObjectType({
         try {
           return Post.addComment(authorId, postId, content);
         } catch (err) {
-          console.log("Error adding post to comment. ", err);
+          console.log("Failed adding post to comment. ", err);
         }
       },
     },
@@ -50,7 +63,7 @@ const mutation = new GraphQLObjectType({
         try {
           return Comment.likes(commentId);
         } catch (err) {
-          console.log("Error adding like to comment. ", err);
+          console.log("Failed adding like to comment. ", err);
         }
       },
     },
@@ -66,7 +79,7 @@ const mutation = new GraphQLObjectType({
         try {
           return new User({ name, username, email, password }).save();
         } catch (err) {
-          console.log("Error adding user. ", err);
+          console.log("Failed adding user. ", err);
         }
       },
     },
@@ -77,7 +90,7 @@ const mutation = new GraphQLObjectType({
         try {
           return Post.findOneAndDelete({ _id: postId });
         } catch (err) {
-          console.log("Error deleting post. ", err);
+          console.log("Failed to delete post. ", err);
         }
       },
     },

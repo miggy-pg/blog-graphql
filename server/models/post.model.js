@@ -21,10 +21,20 @@ const PostSchema = new Schema(
         ref: "comment",
       },
     ],
+    likes: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
 
+PostSchema.statics.likes = async function (postId) {
+  try {
+    const post = await this.findById(postId);
+    ++post.likes;
+    return post.save();
+  } catch (err) {
+    console.log("Failed adding like to post. ", err);
+  }
+};
 PostSchema.statics.findComments = async function (postId) {
   try {
     const post = await this.findById(postId, { __v: 0, _id: 0 })
@@ -34,7 +44,7 @@ PostSchema.statics.findComments = async function (postId) {
       .populate("comments");
     return post.comments;
   } catch (err) {
-    console.log("Error finding comments. ", err);
+    console.log("Failed finding comments. ", err);
   }
 };
 
@@ -62,7 +72,7 @@ PostSchema.statics.findPostsByAuthor = function (authorId) {
     ).sort({ createdAt: 1 });
     return authorsPost;
   } catch (err) {
-    console.log("Error finding all posts by author. ", err);
+    console.log("Failed finding all posts by author. ", err);
   }
 };
 

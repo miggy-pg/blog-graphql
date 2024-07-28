@@ -23,7 +23,7 @@ CommentSchema.statics.likes = async function (commentId) {
     ++comment.likes;
     return comment.save();
   } catch (err) {
-    console.log("Error adding like to comment. ", err);
+    console.log("Failed adding like to comment. ", err);
   }
 };
 

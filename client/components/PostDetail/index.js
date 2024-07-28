@@ -38,93 +38,97 @@ function PostDetail() {
   const [addLikeCommentMutation] = useMutation(ADD_LIKE_TO_COMMENT);
 
   const onSubmit = (formData, ev) => {
-    addCommentMutation({
-      variables: {
-        postId: postId,
-        authorId: `${process.env.USER_ID}`,
-        content: formData.content,
-      },
-      update: (cache, { data: { addCommentToPost } }) => {
-        const { post } = cache.readQuery({
-          query: GET_POST,
-          variables: {
-            postId,
-          },
-        });
-        cache.writeQuery({
-          query: GET_POST,
-          data: {
-            post: {
-              ...post,
-              comments: [...post.comments, addCommentToPost],
+    try {
+      addCommentMutation({
+        variables: {
+          postId: postId,
+          authorId: `${process.env.USER_ID}`,
+          content: formData.content,
+        },
+        update: (cache, { data: { addCommentToPost } }) => {
+          const { post } = cache.readQuery({
+            query: GET_POST,
+            variables: {
+              postId,
             },
-          },
-          variables: { postId },
-        });
-      },
-      onCompleted: () => {
-        methods.reset();
-      },
-    });
+          });
+          cache.writeQuery({
+            query: GET_POST,
+            data: {
+              post: {
+                ...post,
+                comments: [...post.comments, addCommentToPost],
+              },
+            },
+            variables: { postId },
+          });
+        },
+        onCompleted: () => {
+          methods.reset();
+        },
+      });
+    } catch (err) {
+      console.log("Failed adding new comment to post. ", err);
+    }
   };
 
   const handleAddLikeToComment = (commentId) => {
-    const { post } = data;
-    // Find the comment in the current post data
-    const likedCommentIndex = post.comments.findIndex(
-      (comment) => comment.id === commentId
-    );
-    if (likedCommentIndex === -1) return;
-    const currentLikes = post.comments[likedCommentIndex].likes;
-    addLikeCommentMutation({
-      variables: { commentId },
-      update: (cache, { data: { addLikeToComment } }) => {
-        const { post } = cache.readQuery({
-          query: GET_POST,
-          variables: { postId },
-        });
+    try {
+      const { post } = data;
+      // Find the comment in the current post data
+      const likedCommentIndex = post.comments.findIndex(
+        (comment) => comment.id === commentId
+      );
+      if (likedCommentIndex === -1) return;
+      const currentLikes = post.comments[likedCommentIndex].likes;
 
-        const likedCommentIndex = post.comments.findIndex(
-          (comment) => comment.id == commentId
-        );
-        // Ensure the comment is found
-        if (likedCommentIndex === -1) return;
+      addLikeCommentMutation({
+        variables: { commentId },
+        update: (cache, { data: { addLikeToComment } }) => {
+          const { post } = cache.readQuery({
+            query: GET_POST,
+            variables: { postId },
+          });
 
-        const updatedComment = {
-          ...post.comments[likedCommentIndex],
-          likes: addLikeToComment.likes,
-        };
+          const likedCommentIndex = post.comments.findIndex(
+            (comment) => comment.id == commentId
+          );
+          // Ensure the comment is found
+          if (likedCommentIndex === -1) return;
 
-        // Create a new array with the updated comment
-        const updatedComments = [
-          ...post.comments.slice(0, likedCommentIndex),
-          updatedComment,
-          ...post.comments.slice(likedCommentIndex + 1),
-        ];
-        cache.writeQuery({
-          query: GET_POST,
-          data: {
-            post: {
-              ...post,
-              comments: updatedComments,
+          const newComments = post?.comments.map((comment, index) =>
+            index === likedCommentIndex
+              ? { ...comment, liked: addLikeToComment }
+              : comment
+          );
+
+          cache.writeQuery({
+            query: GET_POST,
+            data: {
+              post: {
+                ...post,
+                comments: newComments,
+              },
             },
-          },
-          variables: {
-            postId,
-          },
-        });
-      },
-      optimisticResponse: {
-        __typename: "Mutation",
-        addLikeToComment: {
-          __typename: "CommentType",
-          id: commentId,
-          likes: currentLikes + 1,
-          content: post.comments[likedCommentIndex].content,
-          author: post.comments[likedCommentIndex].author,
+            variables: {
+              postId,
+            },
+          });
         },
-      },
-    });
+        optimisticResponse: {
+          __typename: "Mutation",
+          addLikeToComment: {
+            __typename: "CommentType",
+            id: commentId,
+            likes: currentLikes + 1,
+            content: post.comments[likedCommentIndex].content,
+            author: post.comments[likedCommentIndex].author,
+          },
+        },
+      });
+    } catch (err) {
+      console.log("Failed adding new like to comment. ", err);
+    }
   };
 
   if (loading) return <p>Loading...</p>;

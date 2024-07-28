@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const graphql = require("graphql");
-const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList, GraphQLInt } =
+  graphql;
 const User = mongoose.model("user");
 const Post = mongoose.model("post");
 const CommentType = require("./comment");
@@ -12,6 +13,7 @@ const PostType = new GraphQLObjectType({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
     content: { type: GraphQLString },
+    likes: { type: GraphQLInt },
     comments: {
       type: new GraphQLList(CommentType),
       resolve(parentValue) {

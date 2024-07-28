@@ -244,3 +244,41 @@ const onSubmit = (data, ev) => {
   });
 };
 ```
+
+### Optimistic mutation results
+
+It's often possible to predict the most likely result of a mutation before your GraphQL server returns it. Apollo Client can use this "most likely result" to update your UI optimistically, making your app feel more responsive to the user.
+
+```javascript
+// see more at PostDetail.js
+const handleAddLikeToComment = (commentId) => {
+  try {
+    const { post } = data;
+    // Find the comment in the current post data
+    const likedCommentIndex = post.comments.findIndex(
+      (comment) => comment.id === commentId
+    );
+    if (likedCommentIndex === -1) return;
+    const currentLikes = post.comments[likedCommentIndex].likes;
+    addLikeCommentMutation({
+      variables: { commentId },
+
+      // ... update property here
+
+      // optimisticResponse here
+      optimisticResponse: {
+        __typename: "Mutation",
+        addLikeToComment: {
+          __typename: "CommentType",
+          id: commentId,
+          likes: currentLikes + 1,
+          content: post.comments[likedCommentIndex].content,
+          author: post.comments[likedCommentIndex].author,
+        },
+      },
+    });
+  } catch (err) {
+    console.log("Failed adding new like to comment. ", err);
+  }
+};
+```
